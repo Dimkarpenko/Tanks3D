@@ -1,0 +1,22 @@
+# Blender MTL File: 'Tiger_I.blend'
+# Material Count: 2
+
+newmtl Material_1
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd E:\\Tanks\\GER\\tracks\\PzVI_Tiger_I_track.dds
+
+newmtl Material_1.003
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd E:\\Tanks\\G04_PzVI_Tiger_I\\PzVl_Tiger_I.dds
