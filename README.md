@@ -8,8 +8,8 @@ The code has NOT been polished and is provided "as is". There are a lot of code 
 ## Original game screenshot
 ![image](https://user-images.githubusercontent.com/69617058/148892972-1e267337-013a-404c-b949-198baac8cd2a.png)
 ## Credits
-https://python.org/ - Python (programming language)  
-https://ursinaengine.org - Ursina Engine (3d game engine)  
+https://www.python.org/ -  Python (programming language)  
+https://www.ursinaengine.org - Ursina Engine (3d game engine)  
 ## Author
 (C) 2022 Dmitry Karpenko.
 https://oncode.tech
