@@ -1,4 +1,4 @@
-# 🎮 Tanks game
+# 🎮 Battle City 3D remake
 Tanks game is a remake of the famous game "Tanks" from Dandy made as an experiment.
 All the graphics was hand crafted with Blender software, so that the overall feel and look of the game will be the same as original 2D game.
 
@@ -10,6 +10,8 @@ The code has NOT been polished and is provided "as is". There are a lot of code 
 ## Credits
 https://www.python.org/ -  Python (programming language)  
 https://www.ursinaengine.org - Ursina Engine (3d game engine)  
+## ToDo
+https://trello.com/b/LO651U82/battlecity-3d-remake
 ## Author
 (C) 2022 Dmitry Karpenko.
 https://oncode.tech
