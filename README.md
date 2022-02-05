@@ -5,6 +5,7 @@ The code has NOT been polished and is provided "as is". There are a lot of code 
 
 [![License](https://img.shields.io/github/license/Dimkarpenko/Tanks3D?label=license&style=flat-square)](./LICENSE)
 [![Issues](https://img.shields.io:/github/issues/Dimkarpenko/Tanks3D?style=flat-square)](https://github.com/Dimkarpenko/Tanks3D/issues)
+[![Pulls](https://img.shields.io:/github/issues-pr/Dimkarpenko/Tanks3D?style=flat-square)](https://github.com/Dimkarpenko/Tanks3D/pulls)
 ## Screenshot
 ![image](https://user-images.githubusercontent.com/69617058/148891110-1b850d59-06d7-420f-9f1c-2d30fd30438e.png)
 ## Original game screenshot
