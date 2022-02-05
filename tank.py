@@ -5,7 +5,7 @@ from ursina.prefabs.health_bar import HealthBar
 
 app = Ursina()
 window.borderless = False
-window.title = f"TankiOfflone v0.2"
+window.title = f"TankiOffline v0.2"
 window.icon = "assets/favicon.ico"
 window.exit_button.visible = False
 window.fps_counter.visible = False
