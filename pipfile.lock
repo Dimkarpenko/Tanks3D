@@ -1,0 +1,2 @@
+[requires] # Here goes your required Python version.
+python_version = "3.6"
