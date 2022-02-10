@@ -17,7 +17,6 @@ https://www.python.org/ -  Python (programming language)
 https://www.ursinaengine.org - Ursina Engine (3d game engine)  
 ## ToDo
 https://trello.com/b/LO651U82/battlecity-3d-remake
-<iframe frameborder="0" src="https://itch.io/embed/1393749?bg_color=292929&amp;fg_color=ffffff&amp;link_color=ffffff&amp;border_color=2b2b2b" width="552" height="167"><a href="https://dimkarpenko.itch.io/tanks3d">Tanks3D by Dimkarpenko</a></iframe>
 ## Author
 (C) 2022 Dmitry Karpenko.
 https://oncode.tech
