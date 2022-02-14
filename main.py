@@ -4,8 +4,9 @@ from ursina.shaders import lit_with_shadows_shader
 from ursina.prefabs.health_bar import HealthBar
 
 app = Ursina()
+version = '0.3'
 window.borderless = False
-window.title = f"TankiOffline v0.2"
+window.title = f"Tanks 3D v{version}"
 window.icon = "assets/favicon.ico"
 window.exit_button.visible = False
 window.fps_counter.visible = False
@@ -59,13 +60,14 @@ lamp = Button(color=color.rgb(255,255,255,a=0),position = (-.2,.1,-1),model = 'c
 player.camera_pivot.position = (0,4,-1)
 player.cursor = Entity(parent=camera.ui,model='quad',color=color.white,scale=.03,rotation_z=90,texture='assets/crosshair.png',default_shader=None) 
 
-fps_counter = Text(position=Vec3(-.87,0.48,0),text = '60 fps',i=0)
+fps_counter = Text(position=Vec3(-.87,0.48,0),text = '30 fps',i=0)
 timer_text = Text(position=Vec3(-.87,0.44,0))
 count_text = Text(position=Vec3(-.87,0.40,0))
 time_text = Text(origin = (0,-19),text='ok')
 message_area = Text(origin=(0,15))
 p = Entity(model='quad', texture='shore', parent=camera.ui, scale=(camera.aspect_ratio,1), color=color.white, z=-1, visible=False)
 hp_p = Panel(scale=5,color = color.red)
+pause_panel = Panel(scale=5,visible=False,alpha=150,z=0)
 
 descr = dedent('''<scale:1.5>Победа!<scale:1>\n\n\nВсе танки противника уничтожены''').strip()
 
@@ -89,21 +91,56 @@ pointer.look_at = (player.x,5,player.z)
 cursor = Entity(parent=camera.ui,model='quad',color=color.white,scale=0.8,rotation_z=90,texture='assets/aim.png',visible=False) 
 editor_camera = EditorCamera(enabled=False, ignore_paused=True)
 
+time_count = Text(origin=(0,0),text='5',scale=(4,4),z=-1,ignore_paused=True,time=10)
+
+def map_view(n):
+    editor_camera.enabled = n
+    player.cursor.enabled = not n
+    gun.enabled = not n
+    editor_camera.position = (0,80,0)
+    editor_camera.look_at((0,0,0))
+    editor_camera.rotation_y = 180
+    hb.visible = not n
+    message_area.visible = not n
+
+def toggle_fullscreen():
+    window.fullscreen = not window.fullscreen
+
+def new_game():
+    global i,i_3,timer,enemy_count,timer_enemy,msg_time,max_enemy,game_time,enemies
+    time_count.time = 5
+    application.resume()
+    p.visible,win_text.visible,loose_text.visible,mouse.visible,restart_btn.visible = False,False,False,False,False
+    mouse.locked = True
+    sound_6.play()
+    i,i_3,timer,timer_enemy,enemy_count,msg_time,game_time,player.hp = 0,0,0,0,0,0,600,100
+    player.position = Vec3(0,0,ground.scale_x/2 - 5)
+    player.rotation_y = 180
+    for j in enemies:
+        destroy(j)
+    enemies = [Enemy(x=x*16) for x in range(max_enemy)]
+
+esc_button = quit_btn = Button(text='Закрыть игру', color=color.white, scale_x=.4,position = Vec3(0,.08,-1),scale_y = .05,model = 'cube',visible=False)
+esc_button.on_click = application.quit
+
+fullscr_btn = Button(text='Полноэкранный режим', color=color.white, scale_x=.4,position = Vec3(0,-.08,-1),scale_y = .05,model = 'cube',visible = False)
+fullscr_btn.on_click = toggle_fullscreen
+
+restart_btn = Button(text='Новая игра', color=color.white, scale_x=.4,position = (0,-.2,-1),scale_y = .05,model = 'cube',visible=False)
+restart_btn.on_click = new_game
+
+mouse.visible = False
+
 def pause_input(key):
-    if key == 'tab':
-        editor_camera.enabled = not editor_camera.enabled
-        player.cursor.enabled = not editor_camera.enabled
-        gun.enabled = not editor_camera.enabled
-        editor_camera.position = (0,80,0)
-        editor_camera.look_at((0,0,0))
-        editor_camera.rotation_y = 180
-        hb.visible = not editor_camera.enabled
-        message_area.visible = not editor_camera.enabled
-        application.paused = editor_camera.enabled
+    if key == 'escape':
+        application.paused = not application.paused
+        pause_panel.visible = not pause_panel.visible
+        esc_button.visible = not esc_button.visible
+        fullscr_btn.visible = not fullscr_btn.visible
+        mouse.visible = not mouse.visible
+        mouse.locked = not mouse.locked
 
 pause_handler = Entity(ignore_paused=True, input=pause_input)
-
-time_count = Text(origin=(0,0),text='5',scale=(4,4),z=-1,ignore_paused=True,time=10)
 
 for i in range(round(ground.scale_x/3*2)):
     Entity(model='assets/models/rock/Rock1',y=-1, scale=1, texture='assets/models/rock/Rock-Texture-Surface.jpg',x=random.uniform(-round(ground.scale_x/2)+2,round(ground.scale_x/2)-2),z=random.uniform(-round(ground.scale_x/2)+10,round(ground.scale_x/2)-10),collider='assets/models/rock/Rock1',scale_y = random.uniform(2,4),rotation_y = random.randint(0,360))
@@ -134,32 +171,15 @@ Wall((-23,2,-round(ground.scale_x/2)),round(ground.scale_x/2.1),.5,(0,0,0))
 Wall((0,0,-round(ground.scale_x/2)),round(ground.scale_x/3),.5,(90,0,0))
 Wall((0,0,round(ground.scale_x/2)-3),round(ground.scale_x/3),.5,(90,0,0))
 
-i,i_3,timer,timer_enemy,enemy_count,msg_time,max_enemy,game_time,time_to_start = 0,0,0,0,0,0,2,600,10
-
-def new_game():
-    global i,i_3,timer,enemy_count,timer_enemy,msg_time,max_enemy,game_time,enemies,time_to_start
-    time_to_start = 5
-    application.resume()
-    p.visible,win_text.visible,loose_text.visible,mouse.visible,restart_btn.visible = False,False,False,False,False
-    mouse.locked = True
-    sound_6.play()
-    i,i_3,timer,timer_enemy,enemy_count,msg_time,game_time,player.hp = 0,0,0,0,0,0,600,100
-    player.position = Vec3(0,0,ground.scale_x/2 - 5)
-    player.rotation_y = 180
-    for j in enemies:
-        destroy(j)
-    enemies = [Enemy(x=x*16) for x in range(max_enemy)]
-
-restart_btn = Button(text='Новая игра', color=color.white, scale_x=.4,position = (0,-.2,-1),scale_y = .05,model = 'cube',visible=False)
-restart_btn.on_click = new_game
+i,i_3,timer,timer_enemy,enemy_count,msg_time,max_enemy,game_time = 0,0,0,0,0,0,2,600
 
 def update():
     global i,timer,i_3,timer_enemy,msg_time,game_time,time_to_start
 
     count_text.text = f'Уничтожено танков противника {enemy_count} из {max_enemy}'
     if held_keys['left mouse']:shoot()
-    if held_keys['n']:win_game()
-    #if held_keys['c']:count_start()
+    if held_keys['shift']:map_view(True)
+    if not held_keys['shift']:map_view(False)
 
     player.rotation_y += held_keys['d']*1.5
     player.rotation_y -= held_keys['a']*1.5
@@ -171,14 +191,14 @@ def update():
     game_time -= time.dt
     time_text.text = f'{round(game_time/90,2)}'
 
-    time_to_start -= time.dt
-    time_count.text = f'{round(time_to_start)}'
+    time_count.time -= time.dt
+    time_count.text = f'{round(time_count.time)}'
 
-    if time_to_start <= 0:
+    if time_count.time <= 0:
         player.cursor.enabled=True
         time_count.visible = False
 
-    if time_to_start > 0:
+    if time_count.time > 0:
         player.position=(0,0,ground.scale_x/2 - 5)
         player.rotation_y = 180
         player.cursor.enabled=False
@@ -251,8 +271,6 @@ def input(key):
         sound_7.stop(destroy=True)
         sound_8.stop(destroy=True)
         sound_9.play()
-    
-    if key == 'escape':application.quit()
 
 def loose_game():
     p.visible,loose_text.visible,mouse.visible,mouse.locked,restart_btn.visible,lamp.visible = True,True,True,False,True,False
