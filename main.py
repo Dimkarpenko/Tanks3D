@@ -6,7 +6,7 @@ from ursina.prefabs.health_bar import HealthBar
 app = Ursina()
 version = '0.3'
 window.borderless = False
-window.title = f"Tanks 3D v{version}"
+window.title = f"Tanks3D v{version}"
 window.icon = "assets/favicon.ico"
 window.exit_button.visible = False
 window.fps_counter.visible = False
@@ -60,10 +60,10 @@ lamp = Button(color=color.rgb(255,255,255,a=0),position = (-.2,.1,-1),model = 'c
 player.camera_pivot.position = (0,4,-1)
 player.cursor = Entity(parent=camera.ui,model='quad',color=color.white,scale=.03,rotation_z=90,texture='assets/crosshair.png',default_shader=None) 
 
-fps_counter = Text(position=Vec3(-.87,0.48,0),text = '30 fps',i=0)
+fps_counter = Button(origin=(2.3,-1),text = 'Нет данных',i=0,scale_x=.3,scale_y = .25,color=color.rgb(84,84,84,a=150),visible=False)
 timer_text = Text(position=Vec3(-.87,0.44,0))
-count_text = Text(position=Vec3(-.87,0.40,0))
-time_text = Text(origin = (0,-19),text='ok')
+count_text = Text(position=Vec3(-.87,0.48,0))
+time_text = Button(origin = (0,-9),scale_x=.4,scale_y = .05,color=color.rgb(70,70,70,a=150))
 message_area = Text(origin=(0,15))
 p = Entity(model='quad', texture='shore', parent=camera.ui, scale=(camera.aspect_ratio,1), color=color.white, z=-1, visible=False)
 hp_p = Panel(scale=5,color = color.red)
@@ -171,10 +171,10 @@ Wall((-23,2,-round(ground.scale_x/2)),round(ground.scale_x/2.1),.5,(0,0,0))
 Wall((0,0,-round(ground.scale_x/2)),round(ground.scale_x/3),.5,(90,0,0))
 Wall((0,0,round(ground.scale_x/2)-3),round(ground.scale_x/3),.5,(90,0,0))
 
-i,i_3,timer,timer_enemy,enemy_count,msg_time,max_enemy,game_time = 0,0,0,0,0,0,2,600
+i,i_3,timer,timer_enemy,enemy_count,msg_time,max_enemy,game_time,min_fps,max_fps = 0,0,0,0,0,0,2,600,30,0
 
 def update():
-    global i,timer,i_3,timer_enemy,msg_time,game_time,time_to_start
+    global i,timer,i_3,timer_enemy,msg_time,game_time,min_fps,max_fps
 
     count_text.text = f'Уничтожено танков противника {enemy_count} из {max_enemy}'
     if held_keys['left mouse']:shoot()
@@ -213,7 +213,10 @@ def update():
     timer_text.text = f'Перезарядка... {round(i*15/100)}0%'
 
     if fps_counter.i > 60:
-        fps_counter.text = f'{str(int(1//time.dt))} fps'
+        fps = int(1//time.dt)
+        if fps > max_fps:max_fps = fps
+        if fps < min_fps:min_fps = fps
+        fps_counter.text = f'{fps} fps\n\nmin {min_fps}\n\nmax {max_fps}\n\navg {((max_fps - min_fps)/2) + min_fps}\n\n{round(60/fps,1)} ms'
         fps_counter.i = 0
     fps_counter.i += 1
 
@@ -236,6 +239,8 @@ def update():
         loose_game()
 
 def input(key):
+    if key == 'tab':fps_counter.visible = not fps_counter.visible
+
     if key == 'scroll up':
         sound_1.play()
         camera.fov = 30
@@ -314,7 +319,6 @@ class Enemy(Entity):
         self.z = -round(ground.scale_x/2)+8
 
     def shoot(*kwargs):
-        sound_5.volume = 0.6
         sound_5.stop(destroy=True)
         sound_5.play()
         player.hp -= random.randint(5,10)
