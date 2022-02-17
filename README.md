@@ -18,8 +18,7 @@ https://www.ursinaengine.org - Ursina Engine (3d game engine)
 ## ToDo
 https://trello.com/b/LO651U82/battlecity-3d-remake
 ## Change history
-### Changelog:
-- Release v0.3 (build 142022)
+### - Release v0.3 (build 142022)
 **Added:**
 - Pause menu
 - Map view mode
