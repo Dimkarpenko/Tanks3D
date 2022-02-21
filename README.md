@@ -15,6 +15,7 @@ The code has NOT been polished and is provided "as is". There are a lot of code 
 ## Credits
 https://www.python.org/ -  Python (programming language)  
 https://www.ursinaengine.org - Ursina Engine (3d game engine)  
+https://dimkarpenko.itch.io/tanks3d - Download for Windows,Linux (In developing)
 ## ToDo
 https://trello.com/b/LO651U82/battlecity-3d-remake
 ## Change history
