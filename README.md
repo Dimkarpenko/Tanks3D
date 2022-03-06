@@ -19,7 +19,7 @@ https://dimkarpenko.itch.io/tanks3d - Download for Windows,Linux (In developing)
 ## ToDo
 https://trello.com/b/LO651U82/battlecity-3d-remake
 ## Change history
-### Release v0.3 (build 142022)
+### Release v0.3 (build 140222)
 **Added:**
 - Pause menu
 - Map view mode
