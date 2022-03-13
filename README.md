@@ -31,3 +31,4 @@ https://trello.com/b/LO651U82/battlecity-3d-remake
 ## Author
 (C) 2022 Dmitry Karpenko.
 https://oncode.tech
+![image](https://user-images.githubusercontent.com/69617058/158059584-e23871e3-0f1b-4cdb-a44b-9e1909b7468b.png)
