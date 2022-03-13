@@ -28,8 +28,8 @@ https://trello.com/b/LO651U82/battlecity-3d-remake
 - Bug with aim and map view mode
 - Bug with timer
 
+<img src="https://user-images.githubusercontent.com/69617058/158059670-b2d3351e-c03d-467f-90f0-b39cc57f8e70.png" width="150">
+
 ## Author
 (C) 2022 Dmitry Karpenko.
 https://oncode.tech
-
-<img src="https://user-images.githubusercontent.com/69617058/158059670-b2d3351e-c03d-467f-90f0-b39cc57f8e70.png" width="150">
