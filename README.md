@@ -29,7 +29,7 @@ https://trello.com/b/LO651U82/battlecity-3d-remake
 - Bug with timer
 
 ## Downloads
-<img src="https://user-images.githubusercontent.com/69617058/158059670-b2d3351e-c03d-467f-90f0-b39cc57f8e70.png" width="150">
+<a href="http://dimkarpenko.itch.io/tankd3d" target="_blank"><img src="https://user-images.githubusercontent.com/69617058/158059670-b2d3351e-c03d-467f-90f0-b39cc57f8e70.png" width="150"></a>
 
 ## Author
 (C) 2022 Dmitry Karpenko.
