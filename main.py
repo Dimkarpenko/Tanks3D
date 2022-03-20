@@ -4,13 +4,15 @@ from ursina.shaders import lit_with_shadows_shader
 from ursina.prefabs.health_bar import HealthBar
 
 app = Ursina()
-version = '0.3'
+version = '0.4a'
 window.borderless = False
-window.title = f"Tanks3D v{version}"
+window.show_ursina_splash = False
+title = f"Tanks3D v{version}"
+window.title = title
 window.icon = "assets/favicon.ico"
 window.exit_button.visible = False
 window.fps_counter.visible = False
-window.cog_button.enabled = False
+window.cog_button.visible = False
 window.center_on_screen()
 
 sound_1 = Audio('assets/sounds/sound_1',loop = False, autoplay = False)
@@ -28,6 +30,23 @@ sound_11 = Audio('assets/sounds/sound_11',loop = False, autoplay = False)
 random.seed(0)
 Entity.default_shader = lit_with_shadows_shader
 application.development_mode = False
+run = False
+
+def set_splash(texture):
+    global run
+    camera.overlay.color = color.black
+    logo = Sprite(name='ursina_splash', parent=camera.ui, texture=texture, world_z=camera.overlay.z-1, scale=.1, color=color.clear)
+    logo.animate_color(color.white, duration=2, delay=1, curve=curve.out_quint_boomerang)
+    camera.overlay.animate_color(color.clear, duration=1, delay=5)
+    destroy(logo, delay=6)
+
+    def splash_input(key):
+        destroy(logo)
+        camera.overlay.animate_color(color.clear, duration=.25)
+
+    logo.input = splash_input
+    run = True
+set_splash("assets/intro")
 
 class FirstPersonController(FirstPersonController):
     def update(self):
@@ -60,7 +79,10 @@ lamp = Button(color=color.rgb(255,255,255,a=0),position = (-.2,.1,-1),model = 'c
 player.camera_pivot.position = (0,4,-1)
 player.cursor = Entity(parent=camera.ui,model='quad',color=color.white,scale=.03,rotation_z=90,texture='assets/crosshair.png',default_shader=None) 
 
-fps_counter = Button(origin=(2.3,-1),text = 'Нет данных',i=0,scale_x=.3,scale_y = .25,color=color.rgb(84,84,84,a=150),visible=False)
+fps_counter = Button(position=Vec3(-.75,0.28,0),text = 'Нет данных',i=0,scale_x=.25,scale_y = .2,color=color.rgb(84,84,84,a=150),model='quad',visible=False)
+position = Button(position=Vec3(-.75,0.07,0),text = 'Нет данных',i=0,scale_x=.25,scale_y = .2,color=color.rgb(84,84,84,a=150),model='quad',visible=False)
+hovered = Button(position=Vec3(-.75,-0.06,0),text = 'Нет данных',i=0,scale_x=.25,scale_y = .04,color=color.rgb(84,84,84,a=150),model='quad',visible=False)
+
 timer_text = Text(position=Vec3(-.87,0.44,0))
 count_text = Text(position=Vec3(-.87,0.48,0))
 time_text = Button(origin = (0,-9),scale_x=.4,scale_y = .05,color=color.rgb(70,70,70,a=150))
@@ -86,12 +108,12 @@ shootables_parent = Entity()
 mouse.traverse_target = shootables_parent
 
 cup = Entity(model = 'assets/models/cup/cup',collider = 'box',scale = 0.2,color = color.rgb(255,215,0,a=255),position = Vec3(0,1.5,-round(ground.scale_x/2)))
-pointer = Entity(model='assets/models/pointer/pointer.fbx',position=cup.position,y = 10,color=color.red,scale = 0.009)
+pointer = Entity(model='assets/models/pointer-2/pointer.obj',position=cup.position,y = 10,color=color.red)
 pointer.look_at = (player.x,5,player.z)
 cursor = Entity(parent=camera.ui,model='quad',color=color.white,scale=0.8,rotation_z=90,texture='assets/aim.png',visible=False) 
 editor_camera = EditorCamera(enabled=False, ignore_paused=True)
 
-time_count = Text(origin=(0,0),text='5',scale=(4,4),z=-1,ignore_paused=True,time=10)
+time_count = Text(origin=(0,0),text='5',scale=(4,4),z=-1,ignore_paused=True,time=16)
 
 def map_view(n):
     editor_camera.enabled = n
@@ -106,10 +128,16 @@ def map_view(n):
 def toggle_fullscreen():
     window.fullscreen = not window.fullscreen
 
+def toggle_debug():
+    fps_counter.visible = not fps_counter.visible
+    position.visible = not position.visible
+    hovered.visible = not hovered.visible
+
 def new_game():
     global i,i_3,timer,enemy_count,timer_enemy,msg_time,max_enemy,game_time,enemies
-    time_count.time = 5
+    time_count.time = 20
     application.resume()
+    application.paused = False
     p.visible,win_text.visible,loose_text.visible,mouse.visible,restart_btn.visible = False,False,False,False,False
     mouse.locked = True
     sound_6.play()
@@ -119,12 +147,55 @@ def new_game():
     for j in enemies:
         destroy(j)
     enemies = [Enemy(x=x*16) for x in range(max_enemy)]
+    pause_panel.visible = False
+    esc_button.visible = False
+    fullscr_btn.visible = False
+    new_game_btn.visible =False
+    resume_button.visible = False
+    mouse.visible = False
+    mouse.locked = True
 
-esc_button = quit_btn = Button(text='Закрыть игру', color=color.white, scale_x=.4,position = Vec3(0,.08,-1),scale_y = .05,model = 'cube',visible=False)
+def pause_game():
+    application.paused = not application.paused
+    if application.paused == True:window.title = f'{title} (приостановлено)'
+    else: window.title = title
+    pause_panel.visible = not pause_panel.visible
+    esc_button.visible = not esc_button.visible
+    fullscr_btn.visible = not fullscr_btn.visible
+    new_game_btn.visible = not new_game_btn.visible
+    resume_button.visible = not resume_button.visible
+    mouse.visible = not mouse.visible
+    mouse.locked = not mouse.locked
+
+def loose_game():
+    p.visible,loose_text.visible,mouse.visible,mouse.locked,restart_btn.visible,lamp.visible = True,True,True,False,True,False
+    application.pause()
+    sound_4.stop(destroy=True)
+    sound_6.stop()
+
+def win_game():
+    p.visible,win_text.visible,mouse.visible,mouse.locked,restart_btn.visible,lamp.visible = True,True,True,False,True,False
+    application.pause()
+    sound_4.stop(destroy=True)
+    sound_6.stop()
+
+def set_message(message):
+    global msg_time
+    msg_time = 0
+    message_area.text = message
+    msg_time = 8
+
+esc_button = Button(text='Закрыть игру', color=color.white, scale_x=.4,position = Vec3(-.25,.08,-1),scale_y = .05,model = 'cube',visible=False)
 esc_button.on_click = application.quit
 
-fullscr_btn = Button(text='Полноэкранный режим', color=color.white, scale_x=.4,position = Vec3(0,-.08,-1),scale_y = .05,model = 'cube',visible = False)
+fullscr_btn = Button(text='Полноэкранный режим', color=color.white, scale_x=.4,position = Vec3(-.25,-.08,-1),scale_y = .05,model = 'cube',visible = False)
 fullscr_btn.on_click = toggle_fullscreen
+
+resume_button = Button(text='Продолжить', color=color.white, scale_x=.4,position = Vec3(.25,.08,-1),scale_y = .05,model = 'cube',visible=False)
+resume_button.on_click = pause_game
+
+new_game_btn = Button(text='Новая игра', color=color.white, scale_x=.4,position = Vec3(.25,-.08,-1),scale_y = .05,model = 'cube',visible = False)
+new_game_btn.on_click = new_game
 
 restart_btn = Button(text='Новая игра', color=color.white, scale_x=.4,position = (0,-.2,-1),scale_y = .05,model = 'cube',visible=False)
 restart_btn.on_click = new_game
@@ -133,12 +204,7 @@ mouse.visible = False
 
 def pause_input(key):
     if key == 'escape':
-        application.paused = not application.paused
-        pause_panel.visible = not pause_panel.visible
-        esc_button.visible = not esc_button.visible
-        fullscr_btn.visible = not fullscr_btn.visible
-        mouse.visible = not mouse.visible
-        mouse.locked = not mouse.locked
+        pause_game()
 
 pause_handler = Entity(ignore_paused=True, input=pause_input)
 
@@ -146,7 +212,7 @@ for i in range(round(ground.scale_x/3*2)):
     Entity(model='assets/models/rock/Rock1',y=-1, scale=1, texture='assets/models/rock/Rock-Texture-Surface.jpg',x=random.uniform(-round(ground.scale_x/2)+2,round(ground.scale_x/2)-2),z=random.uniform(-round(ground.scale_x/2)+10,round(ground.scale_x/2)-10),collider='assets/models/rock/Rock1',scale_y = random.uniform(2,4),rotation_y = random.randint(0,360))
 
 for i in range(round(ground.scale_x/4)):
-    Entity(model = 'assets/models/tree/Tree.fbx',scale = 0.01,x=random.uniform(-round(ground.scale_x/2)+2,round(ground.scale_x/2)-2),z=random.uniform(-round(ground.scale_x/2)+10,round(ground.scale_x/2)-10))
+    Entity(model = 'assets/models/tree/Tree.fbx',scale=0.01,x=random.uniform(-round(ground.scale_x/2)+2,round(ground.scale_x/2)-2),z=random.uniform(-round(ground.scale_x/2)+10,round(ground.scale_x/2)-10))
 
 class Wall(Entity):
     def __init__ (self,position=(0,0,0),scale_x = 0,scale_z = 0,rotation=(0,0,0),model='cube',texture='brick',texture_scale=(30,3)):
@@ -171,7 +237,7 @@ Wall((-23,2,-round(ground.scale_x/2)),round(ground.scale_x/2.1),.5,(0,0,0))
 Wall((0,0,-round(ground.scale_x/2)),round(ground.scale_x/3),.5,(90,0,0))
 Wall((0,0,round(ground.scale_x/2)-3),round(ground.scale_x/3),.5,(90,0,0))
 
-i,i_3,timer,timer_enemy,enemy_count,msg_time,max_enemy,game_time,min_fps,max_fps = 0,0,0,0,0,0,2,600,30,0
+i,i_3,timer,timer_enemy,enemy_count,msg_time,max_enemy,game_time,min_fps,max_fps,cpu,ram = 0,0,0,0,0,0,2,600,30,0,0,0
 
 def update():
     global i,timer,i_3,timer_enemy,msg_time,game_time,min_fps,max_fps
@@ -216,9 +282,12 @@ def update():
         fps = int(1//time.dt)
         if fps > max_fps:max_fps = fps
         if fps < min_fps:min_fps = fps
-        fps_counter.text = f'{fps} fps\n\nmin {min_fps}\n\nmax {max_fps}\n\navg {((max_fps - min_fps)/2) + min_fps}\n\n{round(60/fps,1)} ms'
+        fps_counter.text = f'{fps} fps | {round(60/fps,1)} ms\n\nmin {min_fps} | max {max_fps}\n\navg {((max_fps - min_fps)/2) + min_fps}<hr>'
         fps_counter.i = 0
-    fps_counter.i += 1
+    fps_counter.i += 5
+
+    position.text = f"Position:\nx/y/z | {round(player.x)}/{round(player.y)}/{round(player.z)}\n\nRotation:\nx/y/z | {round(player.rotation_x)}/{round(player.rotation_y)}/{round(player.rotation_z)}<hr>"
+    hovered.text = f"hovered = {lamp.visible}"
 
     if i_3 > 60:
         timer_enemy = 0
@@ -239,15 +308,16 @@ def update():
         loose_game()
 
 def input(key):
-    if key == 'tab':fps_counter.visible = not fps_counter.visible
+    if key == 'tab':
+        toggle_debug()
 
-    if key == 'scroll up':
+    if key == 'scroll up'and editor_camera.enabled == False and camera.fov == 90:
         sound_1.play()
         camera.fov = 30
         sound_6.volume = 0.5
         cursor.visible = True
 
-    if key == 'scroll down':
+    if key == 'scroll down' and camera.fov == 30:
         sound_2.play()
         camera.fov = 90
         sound_6.volume = 1
@@ -276,24 +346,6 @@ def input(key):
         sound_7.stop(destroy=True)
         sound_8.stop(destroy=True)
         sound_9.play()
-
-def loose_game():
-    p.visible,loose_text.visible,mouse.visible,mouse.locked,restart_btn.visible,lamp.visible = True,True,True,False,True,False
-    application.pause()
-    sound_4.stop(destroy=True)
-    sound_6.stop()
-
-def win_game():
-    p.visible,win_text.visible,mouse.visible,mouse.locked,restart_btn.visible,lamp.visible = True,True,True,False,True,False
-    application.pause()
-    sound_4.stop(destroy=True)
-    sound_6.stop()
-
-def set_message(message):
-    global msg_time
-    msg_time = 0
-    message_area.text = message
-    msg_time = 8
 
 def shoot():
     global timer
@@ -327,14 +379,14 @@ class Enemy(Entity):
     def update(self):
         global timer_enemy
         dist = distance_xz(player.position, self.position)
-        if dist > 40:return
+        if dist > 50:return
 
         self.health_bar.alpha = max(0, self.health_bar.alpha - time.dt)
         self.look_at(player.position)
 
         hit_info = raycast(self.world_position + Vec3(0,1,0), self.forward, ground.scale_x, ignore=(self,))
         if hit_info.entity == player:
-            if dist > 2:
+            if dist > 0:
                 self.position += self.forward * time.dt * 4
                 lamp.visible = True
                 set_message('В вас целится противник!')
