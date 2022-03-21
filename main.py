@@ -135,7 +135,7 @@ def toggle_debug():
 
 def new_game():
     global i,i_3,timer,enemy_count,timer_enemy,msg_time,max_enemy,game_time,enemies
-    time_count.time = 20
+    time_count.time = 10
     application.resume()
     application.paused = False
     p.visible,win_text.visible,loose_text.visible,mouse.visible,restart_btn.visible = False,False,False,False,False
@@ -172,12 +172,16 @@ def loose_game():
     application.pause()
     sound_4.stop(destroy=True)
     sound_6.stop()
+    sound_7.stop(destroy=True)
+    sound_8.stop(destroy=True)
 
 def win_game():
     p.visible,win_text.visible,mouse.visible,mouse.locked,restart_btn.visible,lamp.visible = True,True,True,False,True,False
     application.pause()
     sound_4.stop(destroy=True)
     sound_6.stop()
+    sound_7.stop(destroy=True)
+    sound_8.stop(destroy=True)
 
 def set_message(message):
     global msg_time
@@ -244,6 +248,7 @@ def update():
 
     count_text.text = f'Уничтожено танков противника {enemy_count} из {max_enemy}'
     if held_keys['left mouse']:shoot()
+    if held_keys['-']:player.hp -=99
     if held_keys['shift']:map_view(True)
     if not held_keys['shift']:map_view(False)
 
@@ -304,7 +309,7 @@ def update():
     if cup_hit_info.hit and enemy_count != max_enemy:
         set_message('Уничтожьте все танки противника!')
 
-    if player.hp == 0:
+    if player.hp < 1:
         loose_game()
 
 def input(key):
