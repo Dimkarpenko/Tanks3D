@@ -2,6 +2,7 @@ from ursina import *
 from ursina.prefabs.first_person_controller import FirstPersonController
 from ursina.shaders import lit_with_shadows_shader
 from ursina.prefabs.health_bar import HealthBar
+from ursina import curve
 
 app = Ursina()
 version = '0.4a'
@@ -13,6 +14,7 @@ window.icon = "assets/favicon.ico"
 window.exit_button.visible = False
 window.fps_counter.visible = False
 window.cog_button.visible = False
+window.fullscreen = False
 window.center_on_screen()
 
 sound_1 = Audio('assets/sounds/sound_1',loop = False, autoplay = False)

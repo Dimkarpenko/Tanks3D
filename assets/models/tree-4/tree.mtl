@@ -1,0 +1,25 @@
+# Blender 3.1.0 MTL File: 'None'
+# www.blender.org
+
+newmtl DB2X2_L01
+Ns 17.777777
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd  C:\Users\1\Desktop\tanks-game\release\assets\models\tree\DB2X2_L01.png
+map_d  C:\Users\1\Desktop\tanks-game\release\assets\models\tree\DB2X2_L01.png
+
+newmtl Trank_bark
+Ns 17.777777
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Kd  C:\Users\1\Desktop\tanks-game\release\assets\models\tree\bark_0004.jpg
