@@ -81,9 +81,9 @@ lamp = Button(color=color.rgb(255,255,255,a=0),position = (-.2,.1,-1),model = 'c
 player.camera_pivot.position = (0,4,-1)
 player.cursor = Entity(parent=camera.ui,model='quad',color=color.white,scale=.03,rotation_z=90,texture='assets/crosshair.png',default_shader=None) 
 
-fps_counter = Button(position=Vec3(-.75,0.28,0),text = 'Нет данных',i=0,scale_x=.25,scale_y = .2,color=color.rgb(84,84,84,a=150),model='quad',visible=False)
-position = Button(position=Vec3(-.75,0.07,0),text = 'Нет данных',i=0,scale_x=.25,scale_y = .2,color=color.rgb(84,84,84,a=150),model='quad',visible=False)
-hovered = Button(position=Vec3(-.75,-0.06,0),text = 'Нет данных',i=0,scale_x=.25,scale_y = .04,color=color.rgb(84,84,84,a=150),model='quad',visible=False)
+fps_counter = Button(position=Vec3(-.75,0.28,0),text = 'No data available',i=0,scale_x=.25,scale_y = .2,color=color.rgb(84,84,84,a=150),model='quad',visible=False)
+position = Button(position=Vec3(-.75,0.07,0),text = 'No data available',i=0,scale_x=.25,scale_y = .2,color=color.rgb(84,84,84,a=150),model='quad',visible=False)
+hovered = Button(position=Vec3(-.75,-0.06,0),text = 'No data available',i=0,scale_x=.25,scale_y = .04,color=color.rgb(84,84,84,a=150),model='quad',visible=False)
 
 timer_text = Text(position=Vec3(-.87,0.44,0))
 count_text = Text(position=Vec3(-.87,0.48,0))
@@ -93,12 +93,12 @@ p = Entity(model='quad', texture='shore', parent=camera.ui, scale=(camera.aspect
 hp_p = Panel(scale=5,color = color.red)
 pause_panel = Panel(scale=5,visible=False,alpha=150,z=0)
 
-descr = dedent('''<scale:1.5>Победа!<scale:1>\n\n\nВсе танки противника уничтожены''').strip()
+descr = dedent('''<scale:1.5>You win!<scale:1>\n\n\nAll enemy tanks have been destroyed''').strip()
 
 Text.default_resolution = 1080 * Text.size
 win_text = Text(text=descr, origin=(0,-1.5),visible=False,color=color.white,z=-1)
 
-descr = dedent('''<scale:1.5>Поражение<scale:1>\n\n\nВаш танк уничтожен!''').strip()
+descr = dedent('''<scale:1.5>Defeat<scale:1>\n\n\nYour tank is destroyed!''').strip()
 
 Text.default_resolution = 1080 * Text.size
 loose_text = Text(text=descr, origin=(0,-1.5),visible=False,color=color.white,z=-1)
@@ -189,19 +189,19 @@ def set_message(message):
     message_area.text = message
     msg_time = 8
 
-esc_button = Button(text='Закрыть игру', color=color.white, scale_x=.4,position = Vec3(-.25,.08,-1),scale_y = .05,model = 'cube',visible=False)
+esc_button = Button(text='Quit game', color=color.white, scale_x=.4,position = Vec3(-.25,.08,-1),scale_y = .05,model = 'cube',visible=False)
 esc_button.on_click = application.quit
 
-fullscr_btn = Button(text='Полноэкранный режим', color=color.white, scale_x=.4,position = Vec3(-.25,-.08,-1),scale_y = .05,model = 'cube',visible = False)
+fullscr_btn = Button(text='Fullscreen mode', color=color.white, scale_x=.4,position = Vec3(-.25,-.08,-1),scale_y = .05,model = 'cube',visible = False)
 fullscr_btn.on_click = toggle_fullscreen
 
-resume_button = Button(text='Продолжить', color=color.white, scale_x=.4,position = Vec3(.25,.08,-1),scale_y = .05,model = 'cube',visible=False)
+resume_button = Button(text='Resume', color=color.white, scale_x=.4,position = Vec3(.25,.08,-1),scale_y = .05,model = 'cube',visible=False)
 resume_button.on_click = pause_game
 
-new_game_btn = Button(text='Новая игра', color=color.white, scale_x=.4,position = Vec3(.25,-.08,-1),scale_y = .05,model = 'cube',visible = False)
+new_game_btn = Button(text='New game', color=color.white, scale_x=.4,position = Vec3(.25,-.08,-1),scale_y = .05,model = 'cube',visible = False)
 new_game_btn.on_click = new_game
 
-restart_btn = Button(text='Новая игра', color=color.white, scale_x=.4,position = (0,-.2,-1),scale_y = .05,model = 'cube',visible=False)
+restart_btn = Button(text='New game', color=color.white, scale_x=.4,position = (0,-.2,-1),scale_y = .05,model = 'cube',visible=False)
 restart_btn.on_click = new_game
 
 mouse.visible = False
@@ -246,7 +246,7 @@ i,i_3,timer,timer_enemy,enemy_count,msg_time,max_enemy,game_time,min_fps,max_fps
 def update():
     global i,timer,i_3,timer_enemy,msg_time,game_time,min_fps,max_fps
 
-    count_text.text = f'Уничтожено танков противника {enemy_count} из {max_enemy}'
+    count_text.text = f'Tanks destroyed {enemy_count} / {max_enemy}'
     if held_keys['left mouse']:shoot()
     if held_keys['-']:player.hp -=99
     if held_keys['shift']:map_view(True)
@@ -281,7 +281,7 @@ def update():
         timer = 0
         i = 0
     i += 0.5
-    timer_text.text = f'Перезарядка... {round(i*15/100)}0%'
+    timer_text.text = f'Recharging... {round(i*15/100)}0%'
 
     if fps_counter.i > 60:
         fps = int(1//time.dt)
@@ -299,7 +299,7 @@ def update():
         i_3 = 0
     i_3 += 0.3
 
-    if timer == 0:timer_text.text = 'Готов!'
+    if timer == 0:timer_text.text = 'Ready'
     hb.value = player.hp
 
     cup_hit_info = cup.intersects()
@@ -307,7 +307,7 @@ def update():
         win_game()
 
     if cup_hit_info.hit and enemy_count != max_enemy:
-        set_message('Уничтожьте все танки противника!')
+        set_message('Destroy all enemy tanks!')
 
     if player.hp < 1:
         loose_game()
@@ -394,7 +394,7 @@ class Enemy(Entity):
             if dist > 0:
                 self.position += self.forward * time.dt * 4
                 lamp.visible = True
-                set_message('В вас целится противник!')
+                set_message('The enemy is aiming at you!')
                 if timer_enemy == 0:
                     self.shoot()
                     timer_enemy = 5
@@ -416,7 +416,7 @@ class Enemy(Entity):
             lamp.visible = False
             enemy_count += 1
             destroy(self)
-            set_message('Танк противника уничтожен!')
+            set_message('The enemy tank has been destroyed!')
             return
 
         self.health_bar.world_scale_x = self.hp / self.max_hp * 1.5
@@ -426,6 +426,6 @@ enemies = [Enemy(x=x*16) for x in range(max_enemy)]
 Sky()
 sun = DirectionalLight()
 sun.look_at(Vec3(1,-1,-1))
-set_message('Поехали!')
+set_message("Let's go!")
 
 app.run()
