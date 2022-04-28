@@ -5,7 +5,7 @@ from ursina.prefabs.health_bar import HealthBar
 from ursina import curve
 
 app = Ursina()
-version = '0.4a'
+version = '0.5a'
 window.borderless = False
 window.show_ursina_splash = False
 title = f"Tanks3D v{version}"
@@ -159,8 +159,6 @@ def new_game():
 
 def pause_game():
     application.paused = not application.paused
-    if application.paused == True:window.title = f'{title} (приостановлено)'
-    else: window.title = title
     pause_panel.visible = not pause_panel.visible
     esc_button.visible = not esc_button.visible
     fullscr_btn.visible = not fullscr_btn.visible
