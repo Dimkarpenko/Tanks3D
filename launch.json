@@ -1,0 +1,12 @@
+{
+    "window": [{
+        "render_mode": "default",
+        "fullscreen":false
+    }],
+
+    "scene":[{
+        "size":80,
+        "nickname":"username",
+        "max_enemy":2
+    }]
+}

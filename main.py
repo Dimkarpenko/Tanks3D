@@ -3,10 +3,10 @@ from ursina.prefabs.first_person_controller import FirstPersonController
 from ursina.shaders import lit_with_shadows_shader
 from ursina.prefabs.health_bar import HealthBar
 from ursina import curve
+import json
 
 app = Ursina()
 version = '0.5a'
-window.borderless = False
 window.show_ursina_splash = False
 title = f"Tanks3D v{version}"
 window.title = title
@@ -14,8 +14,16 @@ window.icon = "assets/favicon.ico"
 window.exit_button.visible = False
 window.fps_counter.visible = False
 window.cog_button.visible = False
-window.fullscreen = False
+window.borderless = False
 window.center_on_screen()
+
+enemies = list()
+
+with open('launch.json') as json_file:
+    data = json.load(json_file)
+    scene_size = data["scene"][0]["size"]
+    max_enemy = data["scene"][0]["max_enemy"]
+    window.fullscreen = data["window"][0]["fullscreen"]
 
 sound_1 = Audio('assets/sounds/sound_1',loop = False, autoplay = False)
 sound_2 = Audio('assets/sounds/sound_2',loop = False, autoplay = False)
@@ -74,16 +82,17 @@ class FirstPersonController(FirstPersonController):
             self.y -= min(self.air_time, ray.distance-.05) * time.dt * 100
             self.air_time += time.dt * .25 * self.gravity
 
-ground = Entity(model='plane', collider='box', scale=80, texture='assets/grass_texture.jpg', texture_scale=(4,4))
+ground = Entity(model='plane', collider='box', scale=scene_size, texture='assets/grass_texture.jpg', texture_scale=(4,4))
 player = FirstPersonController(model='assets/models/tank2/IS',collider='box',texture='IS.dds',color=color.yellow,speed=4,gravity=0,z=ground.scale_x/2 - 5,rotation_y = 180,hp=100)
 hb = HealthBar(bar_color=color.lime.tint(-.25),position=(-.25,-.42,1),max_value=100)
-lamp = Button(color=color.rgb(255,255,255,a=0),position = (-.2,.1,-1),model = 'cube',icon='assets/lamp.png',scale=(.15,.15),visible=False)
+lamp = Button(color=color.rgb(255,255,255,a=0),position = (-.2,.1,1),model = 'cube',icon='assets/lamp.png',scale=(.15,.15),visible=False)
 player.camera_pivot.position = (0,4,-1)
 player.cursor = Entity(parent=camera.ui,model='quad',color=color.white,scale=.03,rotation_z=90,texture='assets/crosshair.png',default_shader=None) 
 
 fps_counter = Button(position=Vec3(-.75,0.28,0),text = 'No data available',i=0,scale_x=.25,scale_y = .2,color=color.rgb(84,84,84,a=150),model='quad',visible=False)
 position = Button(position=Vec3(-.75,0.07,0),text = 'No data available',i=0,scale_x=.25,scale_y = .2,color=color.rgb(84,84,84,a=150),model='quad',visible=False)
 hovered = Button(position=Vec3(-.75,-0.06,0),text = 'No data available',i=0,scale_x=.25,scale_y = .04,color=color.rgb(84,84,84,a=150),model='quad',visible=False)
+time_dt = Button(position=Vec3(-.75,-0.11,0),text = 'No data available',i=0,scale_x=.25,scale_y = .04,color=color.rgb(84,84,84,a=150),model='quad',visible=False)
 
 timer_text = Text(position=Vec3(-.87,0.44,0))
 count_text = Text(position=Vec3(-.87,0.48,0))
@@ -109,7 +118,7 @@ gun.muzzle_flash = Entity(parent=gun,z=1,world_scale=.5,model='quad',color=color
 shootables_parent = Entity()
 mouse.traverse_target = shootables_parent
 
-cup = Entity(model = 'assets/models/cup/cup',collider = 'box',scale = 0.2,color = color.rgb(255,215,0,a=255),position = Vec3(0,1.5,-round(ground.scale_x/2)))
+cup = Entity(model = 'assets/models/cup/cup',collider = 'box',scale = 0.2,color = color.rgb(255,215,0,a=255),position = Vec3(0,1.5,-round(ground.scale_x/2)+4))
 pointer = Entity(model='assets/models/pointer-2/pointer.obj',position=cup.position,y = 10,color=color.red)
 pointer.look_at = (player.x,5,player.z)
 cursor = Entity(parent=camera.ui,model='quad',color=color.white,scale=0.8,rotation_z=90,texture='assets/aim.png',visible=False) 
@@ -121,7 +130,7 @@ def map_view(n):
     editor_camera.enabled = n
     player.cursor.enabled = not n
     gun.enabled = not n
-    editor_camera.position = (0,80,0)
+    editor_camera.position = (0,ground.scale_x,0)
     editor_camera.look_at((0,0,0))
     editor_camera.rotation_y = 180
     hb.visible = not n
@@ -134,6 +143,16 @@ def toggle_debug():
     fps_counter.visible = not fps_counter.visible
     position.visible = not position.visible
     hovered.visible = not hovered.visible
+    time_dt.visible = not time_dt.visible
+
+def spawn_enemies(num):
+    a = ground.scale_x/num
+    x = (ground.scale_x/2)-(a/2)
+
+    for i in range(num):
+        enemy_tank = Enemy(x=x)
+        enemies.append(enemy_tank)
+        x = x - a
 
 def new_game():
     global i,i_3,timer,enemy_count,timer_enemy,msg_time,max_enemy,game_time,enemies
@@ -148,7 +167,7 @@ def new_game():
     player.rotation_y = 180
     for j in enemies:
         destroy(j)
-    enemies = [Enemy(x=x*16) for x in range(max_enemy)]
+    spawn_enemies(max_enemy)
     pause_panel.visible = False
     esc_button.visible = False
     fullscr_btn.visible = False
@@ -156,6 +175,7 @@ def new_game():
     resume_button.visible = False
     mouse.visible = False
     mouse.locked = True
+    lamp.visible = False
 
 def pause_game():
     application.paused = not application.paused
@@ -219,7 +239,7 @@ for i in range(round(ground.scale_x/4)):
     Entity(model = 'assets/models/tree/Tree.fbx',scale=0.01,x=random.uniform(-round(ground.scale_x/2)+2,round(ground.scale_x/2)-2),z=random.uniform(-round(ground.scale_x/2)+10,round(ground.scale_x/2)-10))
 
 class Wall(Entity):
-    def __init__ (self,position=(0,0,0),scale_x = 0,scale_z = 0,rotation=(0,0,0),model='cube',texture='brick',texture_scale=(30,3)):
+    def __init__ (self,position=(0,0,0),scale_x = 0,scale_z = 0,rotation=(0,0,0),model='cube',texture='brick',texture_scale=(30,3),color=color.rgb(255,255,255,255)):
         super().__init__(
         model=model, scale=2,
         texture=texture,
@@ -230,25 +250,23 @@ class Wall(Entity):
         scale_y = 6,
         scale_x = scale_x,
         scale_z = scale_z,
-        color=color.white
+        color=color
         )
 
 Wall((0,2,round(ground.scale_x/2)),round(ground.scale_x),.5,(0,0,0))
 Wall((round(ground.scale_x/2),2,0),.5,round(ground.scale_x),(0,0,0))
 Wall((-round(ground.scale_x/2),2,0),.5,round(ground.scale_x),(0,0,0))
-Wall((23,2,-round(ground.scale_x/2)),round(ground.scale_x/2.1),.5,(0,0,0))
-Wall((-23,2,-round(ground.scale_x/2)),round(ground.scale_x/2.1),.5,(0,0,0))
+Wall((0,2,-round(ground.scale_x/2)),round(ground.scale_x),.5,(0,0,0))
 Wall((0,0,-round(ground.scale_x/2)),round(ground.scale_x/3),.5,(90,0,0))
 Wall((0,0,round(ground.scale_x/2)-3),round(ground.scale_x/3),.5,(90,0,0))
 
-i,i_3,timer,timer_enemy,enemy_count,msg_time,max_enemy,game_time,min_fps,max_fps,cpu,ram = 0,0,0,0,0,0,2,600,30,0,0,0
+i,i_3,timer,timer_enemy,enemy_count,msg_time,game_time,min_fps,max_fps,cpu,ram = 0,0,0,0,0,0,600,30,0,0,0
 
 def update():
     global i,timer,i_3,timer_enemy,msg_time,game_time,min_fps,max_fps
 
     count_text.text = f'Tanks destroyed {enemy_count} / {max_enemy}'
     if held_keys['left mouse']:shoot()
-    if held_keys['-']:player.hp -=99
     if held_keys['shift']:map_view(True)
     if not held_keys['shift']:map_view(False)
 
@@ -265,7 +283,7 @@ def update():
     time_count.time -= time.dt
     time_count.text = f'{round(time_count.time)}'
 
-    if time_count.time <= 0:
+    if time_count.time <= 1:
         player.cursor.enabled=True
         time_count.visible = False
 
@@ -293,6 +311,7 @@ def update():
 
     position.text = f"Position:\nx/y/z | {round(player.x)}/{round(player.y)}/{round(player.z)}\n\nRotation:\nx/y/z | {round(player.rotation_x)}/{round(player.rotation_y)}/{round(player.rotation_z)}<hr>"
     hovered.text = f"hovered = {lamp.visible}"
+    time_dt.text = f"time.dt {round(time.dt,3)}"
 
     if i_3 > 60:
         timer_enemy = 0
@@ -300,9 +319,9 @@ def update():
     i_3 += 0.3
 
     if timer == 0:timer_text.text = 'Ready'
-    hb.value = player.hp
+    hb.value = round(player.hp)
 
-    cup_hit_info = cup.intersects()
+    cup_hit_info = cup.intersects(traverse_target=player)
     if cup_hit_info.hit and enemy_count == max_enemy: 
         win_game()
 
@@ -313,6 +332,7 @@ def update():
         loose_game()
 
 def input(key):
+    global enemy_count
     if key == 'tab':
         toggle_debug()
 
@@ -369,7 +389,7 @@ def shoot():
 
 class Enemy(Entity):
     def __init__(self, **kwargs):
-        super().__init__(parent=shootables_parent, model='assets/models/tank/Tiger_I',collider='assets/models/tank/Tiger_I',texture='PzVl_Tiger_I.dds',y=0.1,**kwargs)
+        super().__init__(parent=shootables_parent, model='assets/models/tank/Tiger_I',collider='box',texture='PzVl_Tiger_I.dds',y=0.1,**kwargs)
         self.health_bar = Entity(parent=self, y=4, model='cube', color=color.red, world_scale=(1.5,.1,.1))
         self.max_hp = 100
         self.hp = self.max_hp
@@ -388,6 +408,9 @@ class Enemy(Entity):
 
         self.health_bar.alpha = max(0, self.health_bar.alpha - time.dt)
         self.look_at(player.position)
+        enemy_hit_info = self.intersects(traverse_target=player)
+        if enemy_hit_info.hit: 
+            player.hp -= 0.05
 
         hit_info = raycast(self.world_position + Vec3(0,1,0), self.forward, ground.scale_x, ignore=(self,))
         if hit_info.entity == player:
@@ -400,6 +423,7 @@ class Enemy(Entity):
                     timer_enemy = 5
 
         else:lamp.visible = False
+
         if self.hovered:self.color = color.rgb(255,138,138,a=255)
         if not self.hovered:self.color = color.white
 
@@ -422,10 +446,9 @@ class Enemy(Entity):
         self.health_bar.world_scale_x = self.hp / self.max_hp * 1.5
         self.health_bar.alpha = 1
 
-enemies = [Enemy(x=x*16) for x in range(max_enemy)]
+spawn_enemies(max_enemy)
 Sky()
 sun = DirectionalLight()
 sun.look_at(Vec3(1,-1,-1))
 set_message("Let's go!")
-
 app.run()
