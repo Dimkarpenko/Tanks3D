@@ -9,7 +9,7 @@ The code has NOT been polished and is provided "as is". There are a lot of code 
 [![size](https://img.shields.io:/github/languages/code-size/Dimkarpenko/Tanks3D?style=flat-square)](https://github.com/Dimkarpenko/Tanks3D)
 [![lang](https://img.shields.io:/github/languages/top/Dimkarpenko/Tanks3D?style=flat-square)](https://github.com/Dimkarpenko/Tanks3D/search?l=python)
 ## Screenshot
-![image](https://user-images.githubusercontent.com/69617058/148891110-1b850d59-06d7-420f-9f1c-2d30fd30438e.png)
+![1](https://user-images.githubusercontent.com/69617058/166160372-3512d1ab-1874-44c2-be14-a26d5b384c4c.png)
 ## Original game screenshot
 ![image](https://user-images.githubusercontent.com/69617058/148892972-1e267337-013a-404c-b949-198baac8cd2a.png)
 ## Credits
