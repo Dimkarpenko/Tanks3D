@@ -43,6 +43,8 @@ https://trello.com/b/LO651U82/battlecity-3d-remake
 - Updated README.md
 - Updated AI of enemy tanks
 
+**Release info** - https://github.com/Dimkarpenko/Tanks3D/releases/tag/build-020522
+
 ### Release v0.3 (build 140222)
 **Added:**
 - Pause menu
