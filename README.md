@@ -25,6 +25,24 @@ https://dimkarpenko.itch.io/tanks3d - Download for Windows,Linux (In developing)
 ## ToDo
 https://trello.com/b/LO651U82/battlecity-3d-remake
 ## Change history
+### Release v0.5-alpha (build 020522)
+**Changelog:**
+
+- Improved landscape generation
+- Fixed incorrect generation of enemy tanks
+- Slight optimization of frames per second
+- Updated the developer dashboard
+- Fixed a bug with incorrect display of the "light bulb" in the pause menu
+- The game is translated into English
+- Added the ability to select the map size
+- Added the ability to select the number of enemy tanks
+- Fixed a bug in the map view mode
+- Added loading screen
+- Fixed a bug with a light bulb when generating a new level
+- Updated interface
+- Updated README.md
+- Updated AI of enemy tanks
+
 ### Release v0.3 (build 140222)
 **Added:**
 - Pause menu
