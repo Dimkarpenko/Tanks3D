@@ -8,8 +8,14 @@ The code has NOT been polished and is provided "as is". There are a lot of code 
 [![Pulls](https://img.shields.io:/github/issues-pr/Dimkarpenko/Tanks3D?style=flat-square)](https://github.com/Dimkarpenko/Tanks3D/pulls)
 [![size](https://img.shields.io:/github/languages/code-size/Dimkarpenko/Tanks3D?style=flat-square)](https://github.com/Dimkarpenko/Tanks3D)
 [![lang](https://img.shields.io:/github/languages/top/Dimkarpenko/Tanks3D?style=flat-square)](https://github.com/Dimkarpenko/Tanks3D/search?l=python)
-## Screenshot
+## Screenshots
 ![1](https://user-images.githubusercontent.com/69617058/166160372-3512d1ab-1874-44c2-be14-a26d5b384c4c.png)
+![2](https://user-images.githubusercontent.com/69617058/166182751-eb6042ff-457c-4d69-a56d-0003f49a1bf8.png)
+![3](https://user-images.githubusercontent.com/69617058/166182799-186c8cf4-6402-4ad7-a67d-fd6250b71efa.png)
+![4](https://user-images.githubusercontent.com/69617058/166182821-d9d15ff2-c561-49ae-bc86-efdbb99c2c4e.png)
+![5](https://user-images.githubusercontent.com/69617058/166182849-67efef5c-a687-44a2-a12b-b314b61209e2.png)
+![6](https://user-images.githubusercontent.com/69617058/166182893-7286a112-af1c-46ae-9805-83f5fe7bbaf1.png)
+
 ## Original game screenshot
 ![image](https://user-images.githubusercontent.com/69617058/148892972-1e267337-013a-404c-b949-198baac8cd2a.png)
 ## Credits
